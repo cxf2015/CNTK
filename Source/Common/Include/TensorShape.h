@@ -88,7 +88,7 @@ namespace Microsoft { namespace MSR { namespace CNTK {
 template <typename T>
 class SmallVector
 {
-    T m_data[12];
+    T m_data[20];
     size_t m_size;
 #ifdef _DEBUG
     static const char defaultUnusedValue = std::numeric_limits<T>::is_signed ? -1 : 0;
