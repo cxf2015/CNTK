@@ -20,7 +20,6 @@ from .cntk_py import learning_rates_per_sample, sgd_learner, \
     text_format_minibatch_source, momentums_per_sample, momentum_sgd_learner, \
     Axis
 
-
 import numpy as np
 
 DATATYPE = np.float32
@@ -32,11 +31,11 @@ class Trainer(cntk_py.Trainer):
     of `parameters` for updating the model's parameters using computed gradients.
     '''
     def __init__(self, model, loss_function, eval_function, parameters):
-        if isinstance(model, Variable):
+        if isinstance(model, cntk_py.Variable):
             model = model.owner
-        if isinstance(loss_function, Variable):
+        if isinstance(loss_function, cntk_py.Variable):
             loss_function = loss_function.owner
-        if isinstance(eval_function, Variable):
+        if isinstance(eval_function, cntk_py.Variable):
             eval_function = eval_function.owner
         super(Trainer, self).__init__(model, loss_function, eval_function, parameters)
 

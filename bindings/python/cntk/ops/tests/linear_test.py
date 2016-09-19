@@ -33,7 +33,7 @@ def test_op_plus(left_operand, right_operand, device_id, precision):
     expected_forward = [AA([left_operand]) + AA([right_operand])]
 
     expected_backward = {
-            'left_arg':  [[[np.ones_like(x, dtype=PRECISION_TO_TYPE[precision]) for x in left_operand]]],
+            'left_arg':  [[[np.ones_like(x, dtype=PRECISION_TO_TYPE[precision]) for x in left_operand]]], 
             'right_arg': [[[np.ones_like(x, dtype=PRECISION_TO_TYPE[precision]) for x in right_operand]]]
             }
     from .. import plus
@@ -55,6 +55,8 @@ SEQ_TENSOR_PAIRS = [
 ]
 @pytest.mark.parametrize("left_batch, right_batch", SEQ_TENSOR_PAIRS)
 def test_op_plus_var_sequences_input_input(left_batch, right_batch, device_id, precision):
+    from .. import plus
+
     assert len(left_batch) == len(right_batch)
     expected_forward = [AA(left_batch[i]) + AA(right_batch[i]) \
             for i in range(len(left_batch))]
@@ -79,7 +81,7 @@ def test_op_plus_var_sequences_input_input(left_batch, right_batch, device_id, p
             needs_gradient=True,
             name='b')
 
-    input_op_input = a + b
+    input_op_input = plus(a, b)
     forward_input = {a:left_value, b:right_value}    
     backward_input = { a: None, b: None }
     expected_backward = { a: expected_backward['left'], b: expected_backward['right'], }
@@ -92,7 +94,7 @@ def test_op_plus_var_sequences_input_input(left_batch, right_batch, device_id, p
 #TODO: enable once the function is exposed
 @pytest.mark.parametrize("left_operand, right_operand", TENSOR_PAIRS)
 def test_op_minus(left_operand, right_operand, device_id, precision):
-    expected_forward = [AA([left_operand]) - AA([right_operand])]
+    expected_forward = [AA([left_operand], dtype=PRECISION_TO_TYPE[precision]) - AA([right_operand], dtype=PRECISION_TO_TYPE[precision])]
 
     expected_backward = {
             'left_arg':  [[[np.ones_like(x, dtype=PRECISION_TO_TYPE[precision]) for x in left_operand]]],

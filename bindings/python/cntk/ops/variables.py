@@ -1,7 +1,7 @@
 import numpy as np
 from cntk.cntk_py import NDArrayView, DeviceDescriptor, Variable, Parameter, ConstantFloat, ConstantDouble, Constant, DataType_Float, DataType_Double, ParameterFloat, ParameterDouble, Axis
 from cntk import DATATYPE
-from cntk.graph import TensorOpsMixin
+from cntk.tensor import TensorOpsMixin
 from .. import utils
 
 FLOAT_32='float32'

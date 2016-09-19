@@ -5,6 +5,7 @@
 
 import numpy as np
 from . import sequence
+from .functions import Function
 from ..utils import sanitize_input, sanitize_shape, get_data_type, sanitize_axis
 
 #TODO: add wrappers for functions under cntk.sequence namespace in c++
@@ -64,9 +65,10 @@ def cross_entropy_with_softmax(output_vector, target_vector, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import cross_entropy_with_softmax
-    output_vector = sanitize_input(output_vector, get_data_type(target_vector))
-    target_vector = sanitize_input(target_vector, get_data_type(output_vector))
-    return cross_entropy_with_softmax(output_vector, target_vector, name).output()
+    dtype = get_data_type(output_vector, target_vector)
+    output_vector = sanitize_input(output_vector, dtype)
+    target_vector = sanitize_input(target_vector, dtype)
+    return cross_entropy_with_softmax(output_vector, target_vector, name)
 
 def squared_error(output_matrix, target_matrix, name=''):
     '''
@@ -89,9 +91,10 @@ def squared_error(output_matrix, target_matrix, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import squared_error
-    output_matrix = sanitize_input(output_matrix, get_data_type(target_matrix))
-    target_matrix = sanitize_input(target_matrix, get_data_type(output_matrix))
-    return square_error(output_matrix, target_matrix, name).output()
+    dtype = get_data_type(output_matrix, target_matrix)
+    output_matrix = sanitize_input(output_matrix, dtype)
+    target_matrix = sanitize_input(target_matrix, dtype)
+    return square_error(output_matrix, target_matrix, name)
 
 def classification_error(output_vector, target_vector, name=''):
     '''
@@ -117,9 +120,10 @@ def classification_error(output_vector, target_vector, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import classification_error
-    output_vector = sanitize_input(output_vector, get_data_type(target_vector))
-    target_vector = sanitize_input(target_vector, get_data_type(output_vector))
-    return classification_error(output_vector, target_vector, name).output()
+    dtype = get_data_type(output_vector, target_vector)
+    output_vector = sanitize_input(output_vector, dtype)
+    target_vector = sanitize_input(target_vector, dtype)
+    return classification_error(output_vector, target_vector, name)
 
 ################################################################################
 # convolution ops
@@ -148,7 +152,7 @@ def convolution(convolution_map, operand, strides=(1,), sharing=[True],
     operand = sanitize_input(operand)    
     return convolution(convolution_map, operand, tuple(reversed(strides)), sharing, auto_padding, 
                         tuple(reversed(lower_pad)), tuple(reversed(upper_pad)), transpose, max_temp_mem_size_in_samples,
-                        name).output()
+                        name)
 
 from cntk.cntk_py import PoolingType_Max,PoolingType_Average
 MAX_POOLING=PoolingType_Max
@@ -177,7 +181,7 @@ def pooling(operand, pooling_type, pooling_window_shape, strides=(1,), auto_padd
     lower_pad = sanitize_shape(lower_pad)
     upper_pad = sanitize_shape(upper_pad)
     return pooling(operand, pooling_type, pooling_window_shape, strides, auto_padding,
-                   lower_pad, upper_pad, name).output()
+                   lower_pad, upper_pad, name)
 
 def batch_normalization(operand, scale, bias, running_mean, running_inv_std, special,
                         normalization_time_constant=0, blend_time_constant=0,
@@ -203,7 +207,7 @@ def batch_normalization(operand, scale, bias, running_mean, running_inv_std, spe
     operand = sanitize_input(operand)    
     return batch_normalization(operand, scale, bias, running_mean, running_inv_std, special,
                                 normalization_time_constant, blend_time_constant,
-                                epsilon, use_cudnn_engine, name).output()
+                                epsilon, use_cudnn_engine, name)
 
 ################################################################################
 # comparison ops
@@ -228,9 +232,10 @@ def less(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import less
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return less(left, right, name).output()
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return less(left, right, name)
 
 def equal(left, right, name=''):
     '''
@@ -251,9 +256,10 @@ def equal(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import equal
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return equal(left, right, name).output()   
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return equal(left, right, name)   
 
 def greater(left, right, name=''):
     '''
@@ -274,9 +280,10 @@ def greater(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import greater
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return greater(left, right, name).output()  
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return greater(left, right, name)  
 
 def greater_equal(left, right, name=''):
     '''
@@ -297,9 +304,10 @@ def greater_equal(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import greater_equal
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return greater_equal(left, right, name).output() 
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return greater_equal(left, right, name) 
 
 def not_equal(left, right, name=''):
     '''
@@ -320,9 +328,10 @@ def not_equal(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import not_equal
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return not_equal(left, right, name).output()
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return not_equal(left, right, name)
 
 def less_equal(left, right, name=''):
     '''
@@ -343,9 +352,10 @@ def less_equal(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import less_equal
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return less_equal(left, right, name).output()
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return less_equal(left, right, name)
 
 ################################################################################
 # linear ops
@@ -372,9 +382,10 @@ def plus(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import plus
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))   
-    return plus(left, right, name).output()
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return plus(left, right, name)
 
 def minus(left, right, name=''):
     '''
@@ -399,9 +410,10 @@ def minus(left, right, name=''):
     '''
 
     from cntk.cntk_py import minus
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return minus(left, right, name).output()
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return minus(left, right, name)
 
 def element_times(left, right, name=''):
     '''
@@ -425,9 +437,10 @@ def element_times(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import element_times
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return element_times(left, right, name).output()       
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return element_times(left, right, name)       
 
 def element_divide(left, right, name=''):
     '''
@@ -454,9 +467,10 @@ def element_divide(left, right, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import element_divide
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return element_divide(left, right, name).output()        
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return element_divide(left, right, name)        
 
 def times(left, right, output_rank=1, name=''):
     '''
@@ -494,9 +508,10 @@ def times(left, right, output_rank=1, name=''):
         :class:`cntk.Function`
     '''
     from cntk.cntk_py import times
-    left = sanitize_input(left, get_data_type(right))
-    right = sanitize_input(right, get_data_type(left))
-    return times(right, left, output_rank, name).output()        
+    dtype = get_data_type(left, right)
+    left = sanitize_input(left, dtype)
+    right = sanitize_input(right, dtype)   
+    return times(right, left, output_rank, name)        
 
 #TODO: enable when it is exposed in c++
 def identity(x, name=''):
@@ -550,7 +565,7 @@ def floor(arg, name=''):
     '''
     from cntk.cntk_py import floor
     arg = sanitize_input(arg, get_data_type(arg))
-    return floor(arg, name).output()    
+    return floor(arg, name)    
 
 def ceil(arg, name=''):
     '''
@@ -573,7 +588,7 @@ def ceil(arg, name=''):
     '''
     from cntk.cntk_py import ceil
     arg = sanitize_input(arg, get_data_type(arg))
-    return ceil(arg, name).output()
+    return ceil(arg, name)
 
 def round(arg, name=''):
     '''
@@ -606,7 +621,7 @@ def round(arg, name=''):
     '''
     from cntk.cntk_py import round
     arg = sanitize_input(arg, get_data_type(arg))
-    return round(arg, name).output()
+    return round(arg, name)
 
 ################################################################################
 # non_linear and nn ops
@@ -643,7 +658,7 @@ def clip(x, min_value, max_value, name=''):
     x = sanitize_input(x, get_data_type(x))
     min_value = sanitize_input(min_value, get_data_type(min_value))
     max_value = sanitize_input(max_value, get_data_type(max_value))
-    return clip(x, min_value, max_value, name).output()
+    return clip(x, min_value, max_value, name)
 
 def relu(x, name=''):
     '''
@@ -664,7 +679,7 @@ def relu(x, name=''):
     '''
     from cntk.cntk_py import re_lu
     x = sanitize_input(x)
-    return re_lu(x, name).output()    
+    return re_lu(x, name)    
 
 def sigmoid(x, name=''):
     '''
@@ -686,7 +701,7 @@ def sigmoid(x, name=''):
     '''
     from cntk.cntk_py import sigmoid
     x = sanitize_input(x)
-    return sigmoid(x, name).output()    
+    return sigmoid(x, name)    
 
 def tanh(x, name=''):
     '''
@@ -707,7 +722,7 @@ def tanh(x, name=''):
     '''
     from cntk.cntk_py import tanh
     x = sanitize_input(x)
-    return tanh(x, name).output()    
+    return tanh(x, name)    
 
 def softmax(x, name=''):
     '''
@@ -733,7 +748,7 @@ def softmax(x, name=''):
     '''
     from cntk.cntk_py import softmax
     x = sanitize_input(x)
-    return softmax(x).output()    
+    return softmax(x)    
 
 def hardmax(x, name=''):
     '''
@@ -749,7 +764,7 @@ def hardmax(x, name=''):
     '''
     from cntk.cntk_py import hardmax
     x = sanitize_input(x)
-    return hardmax(x).output()
+    return hardmax(x)
 
 def exp(x, name=''):
     '''
@@ -769,7 +784,7 @@ def exp(x, name=''):
     '''
     from cntk.cntk_py import exp
     x = sanitize_input(x)
-    return exp(x, name).output()    
+    return exp(x, name)    
 
 def log(x, name=''):
     '''
@@ -793,7 +808,7 @@ def log(x, name=''):
     '''
     from cntk.cntk_py import log
     x = sanitize_input(x)
-    return log(x, name).output()    
+    return log(x, name)    
 
 def sqrt(x, name=''):
     '''
@@ -817,7 +832,7 @@ def sqrt(x, name=''):
     '''
     from cntk.cntk_py import sqrt
     x = sanitize_input(x)
-    return sqrt(x, name).output()    
+    return sqrt(x, name)    
 
 def square(x, name=''):
     '''
@@ -835,7 +850,7 @@ def square(x, name=''):
     '''
     from cntk.cntk_py import square
     x = sanitize_input(x)
-    return square(x, name).output()    
+    return square(x, name)    
 
 def abs(x, name=''):
     '''
@@ -855,7 +870,7 @@ def abs(x, name=''):
     '''
     from cntk.cntk_py import abs
     x = sanitize_input(x)
-    return abs(x, name).output()    
+    return abs(x, name)    
 
 def negate(x, name=''):
     '''
@@ -875,7 +890,7 @@ def negate(x, name=''):
     '''
     from cntk.cntk_py import negate
     x = sanitize_input(x)
-    return negate(x, name).output()   
+    return negate(x, name)   
 
 def reciprocal(x, name=''):
     '''
@@ -893,7 +908,7 @@ def reciprocal(x, name=''):
     '''
     from cntk.cntk_py import reciprocal
     x = sanitize_input(x)
-    return reciprocal(x, name).output()    
+    return reciprocal(x, name)    
 
 def element_select(flag, value_if_true, value_if_false, name=''):
     '''
@@ -918,7 +933,7 @@ def element_select(flag, value_if_true, value_if_false, name=''):
     flag = sanitize_input(flag)
     value_if_true = sanitize_input(value_if_true)
     value_if_false = sanitize_input(value_if_false)
-    return element_select(flag, value_if_true, value_if_false, name).output()    
+    return element_select(flag, value_if_true, value_if_false, name)    
     
 ################################################################################
 # recurrent ops
@@ -956,7 +971,7 @@ def future_value(x, initial_state=None, time_step=1, name=''):
         initial_state = Constant.scalar(sanitize_dtype_cntk(np.float32), 0.0)
 
     x = sanitize_input(x)
-    return future_value(x, initial_state, time_step, name).output()
+    return future_value(x, initial_state, time_step, name)
     
 def past_value(x, initial_state=None, time_step=1, name=''):
     '''
@@ -987,7 +1002,7 @@ def past_value(x, initial_state=None, time_step=1, name=''):
         initial_state = Constant.scalar(sanitize_dtype_cntk(np.float32), 0.0)
 
     x = sanitize_input(x)
-    return past_value(x, initial_state, time_step, name).output()
+    return past_value(x, initial_state, time_step, name)
 
 ################################################################################
 # reshaping ops
@@ -1023,22 +1038,22 @@ def reshape(x, shape, name=''):
     x = sanitize_input(x)
     shape = sanitize_shape(shape)
 
-    return reshape(x, shape, name).output()
+    return reshape(x, shape, name)
 
 def transpose(x, axis1=0, axis2=1, name=''):
     '''
     Reverses two axes of the tensor. The output tensor has the same data but with
-    axis1 and axis2 swapped.    
+    `axis1` and `axis2` swapped.    
         
     Examples:
-        >>> C.eval(C.transpose_dimensions([[0,1],[2,3],[4,5]], 1,2))
+        >>> C.eval(C.transpose([[0,1],[2,3],[4,5]], 1,2))
         [array([[[ 0.,  4.,  3.],
                  [ 2.,  1.,  5.]]])]
             
     Args:        
         x: tensor to be transposed
-        axis1 (`int` or :class:`cntk.Axis`): the axis to swap with axis2
-        axis2 (`int` or :class:`cntk.Axis`): the axis to swap with axis1
+        axis1 (`int` or :class:`cntk.Axis`): the axis to swap with `axis2`
+        axis2 (`int` or :class:`cntk.Axis`): the axis to swap with `axis1`
         name (`str`, optional): the name of the node in the network
     Returns:
         :class:`cntk.Function`
@@ -1048,7 +1063,7 @@ def transpose(x, axis1=0, axis2=1, name=''):
     rank = max(x.shape().rank(), 2)
     axis1 = sanitize_axis(rank, axis1)
     axis2 = sanitize_axis(rank, axis2)
-    return transpose_axes(x, axis1, axis2, name).output()
+    return transpose_axes(x, axis1, axis2, name)
 
 def slice(x, axis, begin_index, end_index, name=''): 
     '''
@@ -1092,7 +1107,7 @@ def slice(x, axis, begin_index, end_index, name=''):
     from cntk.cntk_py import slice
     x = sanitize_input(x)
     axis = sanitize_axis(x.shape().rank(), axis)
-    return slice(x, axis, begin_index, end_index, name).output()     
+    return slice(x, axis, begin_index, end_index, name)     
 
 #TODO: enable when it is exposed in c++
 def splice(inputs, axis=0, name=''): 
@@ -1134,7 +1149,7 @@ def splice(inputs, axis=0, name=''):
     rank = max([x.shape().rank() for x in inputs])
     axis = sanitize_axis(rank, axis)
 
-    return splice(inputs, axis, name).output()     
+    return splice(inputs, axis, name)     
 
 ################################################################################
 # reduction ops
@@ -1175,7 +1190,7 @@ def reduce_sum(x, axis=None, name=''):
     from cntk.cntk_py import reduce_sum
     x = sanitize_input(x)
     axis = sanitize_axis(x.shape().rank(), axis)
-    return reduce_sum(x, axis, name).output()    
+    return reduce_sum(x, axis, name)    
 
 def reduce_log_sum(x, axis, name=''): 
     '''
@@ -1195,7 +1210,7 @@ def reduce_log_sum(x, axis, name=''):
     from cntk.cntk_py import reduce_log_sum
     x = sanitize_input(x)
     axis = sanitize_axis(x.shape().rank(), axis)
-    return reduce_log_sum(x, axis, name).output()
+    return reduce_log_sum(x, axis, name)
 
 def reduce_mean(x, axis, name=''): 
     '''
@@ -1215,7 +1230,7 @@ def reduce_mean(x, axis, name=''):
     from cntk.cntk_py import reduce_mean
     x = sanitize_input(x)
     axis = sanitize_axis(x.shape().rank(), axis)
-    return reduce_mean(x, axis, name).output()
+    return reduce_mean(x, axis, name)
 
 def reduce_max(x, axis, name=''): 
     '''
@@ -1235,7 +1250,7 @@ def reduce_max(x, axis, name=''):
     from cntk.cntk_py import reduce_max
     x = sanitize_input(x)
     axis = sanitize_axis(x.shape().rank(), axis)
-    return reduce_max(x, axis, name).output()
+    return reduce_max(x, axis, name)
 
 def reduce_min(x, axis, name=''): 
     '''
@@ -1255,7 +1270,7 @@ def reduce_min(x, axis, name=''):
     from cntk.cntk_py import reduce_min
     x = sanitize_input(x)
     axis = sanitize_axis(x.shape().rank(), axis)
-    return reduce_min(x, axis, name).output()
+    return reduce_min(x, axis, name)
 
 ################################################################################
 # training ops
@@ -1284,7 +1299,7 @@ def dropout(x, dropout_rate=0.0, name=''):
     from cntk.cntk_py import dropout
     x = sanitize_input(x)
     
-    return dropout(x, dropout_rate, name).output()    
+    return dropout(x, dropout_rate, name)    
 
 ################################################################################
 # variables_and_parameters ops
